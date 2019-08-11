@@ -1,0 +1,329 @@
+OK, so what's the status:
+
+in m19.i386
+
+version.list is wrong, the zap package version isn't right
+
+release.txt doesn't match /etc/release
+
+release.repo is new, and repo.list is modified to match, so that's
+wrong for m19 but correct in general
+
+
+
+
+So What I need is to create correct files for
+
+x86: m18 m19
+
+sparc: m16 m18
+
+and then create
+
+m20 for x86
+m20 for sparc
+
+that are in the new scheme (and upgradeable to)
+
+So that latter part is
+
+./mk_pkgs.sh -p sparc -r m18 -c m16
+./mk_pkgs.sh -p sparc -r m18 -u m16
+
+For m20
+
+./mk_pkgs.sh -p sparc -r m20 -c m18
+./mk_pkgs.sh -p sparc -r m20 -u m18
+
+to add a micro release
+
+./mk_pkgs.sh -p sparc -r m18 -m 1
+
+
+FIXME: That *ought* to update version.list in m16 as well, it doesn't.
+
+I probably need to create a file in each directory that has the pkg
+version embedded in it, to make it easier later.
+
+gen_release.sh kinda works for creating TRIBBblix-release - need
+similar scripts for zap and zap-upgrade
+
+then need to create a catalog and index file. Hm, which will need to
+be updateable as the zap-upgrade pkg (at least) will need to be
+updated
+
+So I need a mechanism to build the new upgrade packages and
+automatically create new catalog
+
+Ideally, have an upload script as well.
+
+Need to handle variants
+
+Need to remove the repo metadata from the zap github repo and populate
+it from here
+
+Need to fix tribblix-build
+
+Need to save the packages and the initial catalog (so we can build the
+iso from this saved catalog).
+
+
+So to create packages
+
+./mk_pkgs.sh -p i386 -r m20 -u m18 -u m19
+
+Still need to put a copy of the release repo catalog on the iso
+
+
+./gen_catalog.sh ../release-repos/m20.i386 > ../release-repos/m20.i386/catalog
+
+To upload:
+
+scp -r ../release-repos/m20.i386 pkgs.tribblix.org:/var/www/html/release-m20
+
+
+
+To create an omni variant
+(it's really m20lx.1)
+so the tribblix repo is shared, but the release and illumos repos are
+different; also need a different set of overlays (to make sure lx gets
+installed, amongst other things)
+
+cp -r m20.i386 m20lx.1.i386
+gsed -i s:m20:m20lx.1: illumos.repo
+gsed -i s:m20:m20lx.1: release.repo
+gsed -i s:m20:m20.1: release.txt
+gsed -i s:Tribblix:OmniTribblix: release.txt
+gsed -i s:m20:m20lx: tribblix.ovl
+gsed -i s:m20:m20lx.1: version.current
+echo "m20lx.1|http://pkgs.tribblix.org/release-m20lx.1/TRIBzap.0.0.20lx.1.zap|OmniTribblix m20.1" > version.list
+
+./gen_release.sh -p i386 -r m20 -m 1 -v lx
+./gen_zap.sh -p i386 -r m20 -m 1 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 1 -v lx
+mkdir -p ../release-repos/m20lx.1.i386
+cp /tmp/pct/* ../release-repos/m20lx.1.i386
+./gen_catalog.sh ../release-repos/m20lx.1.i386 > ../release-repos/m20lx.1.i386/catalog
+
+And for update 2 of lx:
+
+cp -r m20lx.1.i386 m20lx.2.i386
+cd m20lx.2.i386
+gsed -i s:m20lx.1:m20lx.2: illumos.repo
+gsed -i s:m20lx.1:m20lx.2: release.repo
+gsed -i s:m20.1:m20.2: release.txt
+gsed -i s:m20lx.1:m20lx.2: version.current
+echo "m20lx.2|http://pkgs.tribblix.org/release-m20lx.2/TRIBzap.0.0.20lx.2.zap|OmniTribblix m20.2" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m20 -m 2 -v lx
+./gen_zap.sh -p i386 -r m20 -m 2 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 2 -v lx
+mkdir -p ../release-repos/m20lx.2.i386
+cp /tmp/pct/* ../release-repos/m20lx.2.i386
+./gen_catalog.sh ../release-repos/m20lx.2.i386 > ../release-repos/m20lx.2.i386/catalog
+
+And for update 3 of lx:
+
+cp -r m20lx.2.i386 m20lx.3.i386
+cd m20lx.3.i386
+sed -i s:m20lx.2:m20lx.3: illumos.repo
+sed -i s:m20lx.2:m20lx.3: release.repo
+sed -i s:m20.2:m20.3: release.txt
+sed -i s:m20lx.2:m20lx.3: version.current
+echo "m20lx.3|http://pkgs.tribblix.org/release-m20lx.3/TRIBzap.0.0.20lx.3.zap|OmniTribblix m20.3" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m20 -m 3 -v lx
+./gen_zap.sh -p i386 -r m20 -m 3 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 3 -v lx
+mkdir -p ../release-repos/m20lx.3.i386
+cp /tmp/pct/* ../release-repos/m20lx.3.i386
+./gen_catalog.sh ../release-repos/m20lx.3.i386 > ../release-repos/m20lx.3.i386/catalog
+
+And for update 4 of lx:
+
+cp -r m20lx.3.i386 m20lx.4.i386
+cd m20lx.4.i386
+sed -i s:m20lx.3:m20lx.4: illumos.repo
+sed -i s:m20lx.3:m20lx.4: release.repo
+sed -i s:m20.3:m20.4: release.txt
+sed -i s:m20lx.3:m20lx.4: version.current
+echo "m20lx.4|http://pkgs.tribblix.org/release-m20lx.4/TRIBzap.0.0.20lx.4.zap|OmniTribblix m20.4" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m20 -m 4 -v lx
+./gen_zap.sh -p i386 -r m20 -m 4 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 4 -v lx
+mkdir -p ../release-repos/m20lx.4.i386
+cp /tmp/pct/* ../release-repos/m20lx.4.i386
+./gen_catalog.sh ../release-repos/m20lx.4.i386 > ../release-repos/m20lx.4.i386/catalog
+
+
+And for update 5 of lx:
+
+cp -r m20lx.4.i386 m20lx.5.i386
+cd m20lx.5.i386
+sed -i s:m20lx.4:m20lx.5: illumos.repo
+sed -i s:m20lx.4:m20lx.5: release.repo
+sed -i s:m20.4:m20.5: release.txt
+sed -i s:m20lx.4:m20lx.5: version.current
+echo "m20lx.5|http://pkgs.tribblix.org/release-m20lx.5/TRIBzap.0.0.20lx.5.zap|OmniTribblix m20.5" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m20 -m 5 -v lx
+./gen_zap.sh -p i386 -r m20 -m 5 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 5 -v lx
+mkdir -p ../release-repos/m20lx.5.i386
+cp /tmp/pct/* ../release-repos/m20lx.5.i386
+./gen_catalog.sh ../release-repos/m20lx.5.i386 > ../release-repos/m20lx.5.i386/catalog
+
+
+And for update 6 of lx:
+
+cp -r m20lx.5.i386 m20lx.6.i386
+cd m20lx.6.i386
+sed -i s:m20lx.5:m20lx.6: illumos.repo
+sed -i s:m20lx.5:m20lx.6: release.repo
+sed -i s:m20.5:m20.6: release.txt
+sed -i s:m20lx.5:m20lx.6: version.current
+echo "m20lx.6|http://pkgs.tribblix.org/release-m20lx.6/TRIBzap.0.0.20lx.6.zap|OmniTribblix m20.6" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m20 -m 6 -v lx
+./gen_zap.sh -p i386 -r m20 -m 6 -v lx
+./gen_zap_upgrade.sh -p i386 -r m20 -m 6 -v lx
+mkdir -p ../release-repos/m20lx.6.i386
+cp /tmp/pct/* ../release-repos/m20lx.6.i386
+./gen_catalog.sh ../release-repos/m20lx.6.i386 > ../release-repos/m20lx.6.i386/catalog
+
+
+
+
+To create an update release
+
+./mk_pkgs.sh -p i386 -r m20 -m 1
+./mk_pkgs.sh -p i386 -r m20 -m 2
+./mk_pkgs.sh -p i386 -r m20 -m 3
+./mk_pkgs.sh -p i386 -r m20 -m 4
+./mk_pkgs.sh -p i386 -r m20 -m 5
+
+The following ought to work for LX, but don't:
+
+./mk_pkgs.sh -p i386 -r m20 -m 2 -v lx
+./mk_pkgs.sh -p i386 -r m20 -m 3 -v lx
+./mk_pkgs.sh -p i386 -r m20 -m 4 -v lx
+./mk_pkgs.sh -p i386 -r m20 -m 5 -v lx
+
+
+To create a new release, basing m21.0 on m20
+
+./mk_pkgs.sh -p i386 -r m21.0 -c m20
+./mk_pkgs.sh -p i386 -r m21.0 -u m20
+
+./gen_catalog.sh ../release-repos/m21.0.i386 > ../release-repos/m21.0.i386/catalog
+
+
+This is entertaining, because the logic here doesn't understand update
+0.
+And the LX variant gets horribly confused.
+Future updates will have to do something different.
+
+LX for m21, aka m21lx.0
+
+cp -r m21.0.i386 m21lx.0.i386
+cd m21lx.0.i386
+sed -i s:m21.0:m21lx.0: illumos.repo
+sed -i s:m21.0:m21lx.0: release.repo
+sed -i s:m21.0:m21.0: release.txt
+sed -i s:m21.0:m21lx.0: version.current
+echo "m21lx.0|http://pkgs.tribblix.org/release-m21lx.0/TRIBzap.0.0.21lx.0.zap|OmniTribblix m21.0" >! version.list
+cd ..
+
+./gen_release.sh -p i386 -r m21lx.0
+./gen_zap.sh -p i386 -r m21lx.0
+./gen_zap_upgrade.sh -p i386 -r m21lx.0
+mkdir -p ../release-repos/m21lx.0.i386
+cp /tmp/pct/* ../release-repos/m21lx.0.i386
+./gen_catalog.sh ../release-repos/m21lx.0.i386 > ../release-repos/m21lx.0.i386/catalog
+
+
+
+To manually generate update packages:
+
+First edit the appropriate version.list files.
+
+Then
+
+./gen_zap_upgrade.sh -p i386 -r m20
+./gen_zap_upgrade.sh -p i386 -r m20.1
+./gen_zap_upgrade.sh -p i386 -r m20.2
+./gen_zap_upgrade.sh -p i386 -r m20.3
+./gen_zap_upgrade.sh -p i386 -r m20.4
+./gen_zap_upgrade.sh -p i386 -r m20.5
+./gen_zap_upgrade.sh -p i386 -r m20.6
+./gen_zap_upgrade.sh -p i386 -r m20lx.1
+./gen_zap_upgrade.sh -p i386 -r m20lx.2
+./gen_zap_upgrade.sh -p i386 -r m20lx.3
+./gen_zap_upgrade.sh -p i386 -r m20lx.4
+./gen_zap_upgrade.sh -p i386 -r m20lx.5
+./gen_zap_upgrade.sh -p i386 -r m20lx.6
+
+./gen_zap_upgrade.sh -p sparc -r m20
+
+The copy the files
+
+cp /tmp/pct/TRIBzap-upgrade.0.20.12.zap* ../release-repos/m20.i386/
+# above is special
+cp /tmp/pct/TRIBzap-upgrade.0.20.1.*.zap* ../release-repos/m20.1.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.1.*.zap* ../release-repos/m20lx.1.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20.2.*.zap* ../release-repos/m20.2.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.2.*.zap* ../release-repos/m20lx.2.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20.3.*.zap* ../release-repos/m20.3.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.3.*.zap* ../release-repos/m20lx.3.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20.4.*.zap* ../release-repos/m20.4.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.4.*.zap* ../release-repos/m20lx.4.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20.5.*.zap* ../release-repos/m20.5.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.5.*.zap* ../release-repos/m20lx.5.i386/
+# and below is the sidegrade of current vanilla to lx
+cp /tmp/pct/TRIBzap-upgrade.0.20.6.*.zap* ../release-repos/m20.6.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.20lx.6.*.zap* ../release-repos/m20lx.6.i386/
+
+etc...
+
+
+then update the catalogs:
+
+./gen_catalog.sh ../release-repos/m20.i386 >! ../release-repos/m20.i386/catalog
+
+./gen_catalog.sh ../release-repos/m20lx.1.i386 >! ../release-repos/m20lx.1.i386/catalog
+./gen_catalog.sh ../release-repos/m20lx.2.i386 >! ../release-repos/m20lx.2.i386/catalog
+./gen_catalog.sh ../release-repos/m20lx.3.i386 >! ../release-repos/m20lx.3.i386/catalog
+./gen_catalog.sh ../release-repos/m20lx.4.i386 >! ../release-repos/m20lx.4.i386/catalog
+./gen_catalog.sh ../release-repos/m20lx.5.i386 >! ../release-repos/m20lx.5.i386/catalog
+./gen_catalog.sh ../release-repos/m20lx.6.i386 >! ../release-repos/m20lx.6.i386/catalog
+
+./gen_catalog.sh ../release-repos/m20.1.i386 >! ../release-repos/m20.1.i386/catalog
+./gen_catalog.sh ../release-repos/m20.2.i386 >! ../release-repos/m20.2.i386/catalog
+./gen_catalog.sh ../release-repos/m20.3.i386 >! ../release-repos/m20.3.i386/catalog
+./gen_catalog.sh ../release-repos/m20.4.i386 >! ../release-repos/m20.4.i386/catalog
+./gen_catalog.sh ../release-repos/m20.5.i386 >! ../release-repos/m20.5.i386/catalog
+./gen_catalog.sh ../release-repos/m20.6.i386 >! ../release-repos/m20.6.i386/catalog
+
+./gen_catalog.sh ../release-repos/m20.sparc >! ../release-repos/m20.sparc/catalog
+
+then copy up:
+
+./sync_repo.sh ../release-repos/m20.i386
+./sync_repo.sh ../release-repos/m20.1.i386
+./sync_repo.sh ../release-repos/m20lx.1.i386
+./sync_repo.sh ../release-repos/m20.2.i386
+./sync_repo.sh ../release-repos/m20lx.2.i386
+./sync_repo.sh ../release-repos/m20.3.i386
+./sync_repo.sh ../release-repos/m20lx.3.i386
+./sync_repo.sh ../release-repos/m20.4.i386
+./sync_repo.sh ../release-repos/m20lx.4.i386
+./sync_repo.sh ../release-repos/m20.5.i386
+./sync_repo.sh ../release-repos/m20lx.5.i386
+./sync_repo.sh ../release-repos/m20.6.i386
+./sync_repo.sh ../release-repos/m20lx.6.i386
