@@ -248,6 +248,27 @@ cp /tmp/pct/* ../release-repos/m21lx.0.i386
 ./gen_catalog.sh ../release-repos/m21lx.0.i386 > ../release-repos/m21lx.0.i386/catalog
 
 
+Roll out m22.0
+
+./mk_pkgs.sh -p sparc -r m22 -c m20
+./mk_pkgs.sh -p i386 -r m22 -c m21.0
+./mk_pkgs.sh -p i386 -r m22 -v lx -c m21.0
+
+./mk_pkgs.sh -p sparc -r m22 -u m20
+./mk_pkgs.sh -p i386 -r m22 -u m21.0
+./mk_pkgs.sh -p i386 -r m22lx -u m21.0
+TODO: test those with the upgrade bits
+TODO: fix the lx case so it's a variant
+
+./gen_catalog.sh ../release-repos/m22.0.i386 > ../release-repos/m22.0.i386/catalog
+
+The update releases would be
+
+./mk_pkgs.sh -p i386 -r m22 -m 1
+./mk_pkgs.sh -p i386 -r m22lx -m 1
+
+TODO: fix the lx case so it's a variant
+
 
 To manually generate update packages:
 

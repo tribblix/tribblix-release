@@ -99,18 +99,35 @@ if [[ -n $DOCLONE ]]; then
     if [ ! -d ${DOCLONE}.${ARCH} ]; then
 	usage "Cannot find $DOCLONE to act as clone source"
     fi
+    #
+    # handle variants
+    # the main Tribblix repo is shared; everything else is a variant name
+    #
+    TRELEASE=${RELEASE}
+    DISTRONAME="Tribblix"
+    if [[ -n $VARIANT ]]; then
+	RELEASE=${RELEASE}${VARIANT}
+	case $VARIANT in
+	    lx)
+		DISTRONAME="OmniTribblix"
+		;;
+	    *)
+		echo "Unrecognized variant, hoping for the best"
+		;;
+	esac
+    fi
     if [ -d ${RELEASE}.${ARCH} ]; then
 	usage "New release ${RELEASE}.${ARCH} already exists"
     else
 	echo "Creating ${RELEASE}.${ARCH}"
 	if [[ -z $RELTEXT ]]; then
-	    RELTEXT="Tribblix ${RELEASE}"
+	    RELTEXT="${DISTRONAME} ${TRELEASE}"
 	fi
 	mkdir -p ${RELEASE}.${ARCH}
 	if [ -d ${RELEASE}.${ARCH} ]; then
 	    cp ${DOCLONE}.${ARCH}/* ${RELEASE}.${ARCH}
 	    gsed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: ${RELEASE}.${ARCH}/tribblix.ovl
-	    gsed -i s:/tribblix-${DOCLONE}:/tribblix-${RELEASE}: ${RELEASE}.${ARCH}/tribblix.repo
+	    gsed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: ${RELEASE}.${ARCH}/tribblix.repo
 	    gsed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: ${RELEASE}.${ARCH}/illumos.repo
 	    gsed -i s:/release-${DOCLONE}:/release-${RELEASE}: ${RELEASE}.${ARCH}/release.repo
 	    # source for /etc/release
@@ -123,7 +140,7 @@ if [[ -n $DOCLONE ]]; then
 	    echo "${RELEASE}|${UGURL}TRIBzap.${NRELEASE}.0.zap|${RELTEXT}" > ${RELEASE}.${ARCH}/version.list
 	    exit 0
 	else
-	    usage "Cannot create ${RELEASE}.${URELEASE}.${ARCH}"
+	    usage "Cannot create ${RELEASE}.${ARCH}"
 	fi
     fi
 fi

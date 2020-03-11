@@ -1,0 +1,4 @@
+NAME=release
+DESC=Tribblix release packages
+URL=http://pkgs.tribblix.org/release-m22/
+SIGNED=tribblix
