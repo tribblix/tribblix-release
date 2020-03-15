@@ -10,6 +10,8 @@ THOME=${THOME:-/packages/localsrc/Tribblix}
 
 # this release
 RELEASE=""
+# this update
+URELEASE=""
 # the architecture (hardware platform) we're releasing
 ARCH=""
 
@@ -29,9 +31,25 @@ while getopts p:r:m:v: opt; do
 	r)
 	    RELEASE=$OPTARG
 	    ;;
+	m)
+	    URELEASE=$OPTARG
+	    ;;
     esac
 done
 shift $((OPTIND - 1))
+
+#
+# derived parameters
+#
+PKGVER=`echo ${RELEASE}|sed s:m:0.:`
+if [[ -z $URELEASE ]]; then
+    RELDIR="${RELEASE}.${ARCH}"
+    PKGVER="${PKGVER}.0"
+else
+    RELDIR="${RELEASE}.${URELEASE}.${ARCH}"
+    PKGVER="${PKGVER}.${URELEASE}"
+fi
+PKGVER=0.${PKGVER}
 
 #
 # ARCH and RELEASE are required
@@ -46,8 +64,8 @@ fi
 #
 # check we can find ourself
 #
-if [ ! -d ${RELEASE}.${ARCH} ]; then
-    usage "Cannot find release ${RELEASE}.${ARCH}"
+if [ ! -d ${RELDIR} ]; then
+    usage "Cannot find release ${RELDIR}"
 fi
 
 #
@@ -100,16 +118,14 @@ rm -fr ${BDIR}/etc/zap/repositories
 # and copy the current metadata
 #
 mkdir -p ${BDIR}/etc/zap/repositories
-cp ${RELEASE}.${ARCH}/overlays.list ${BDIR}/etc/zap
-cp ${RELEASE}.${ARCH}/repo.list ${BDIR}/etc/zap
-cp ${RELEASE}.${ARCH}/*.repo ${BDIR}/etc/zap/repositories
-cp ${RELEASE}.${ARCH}/*.ovl ${BDIR}/etc/zap/repositories
+cp ${RELDIR}/overlays.list ${BDIR}/etc/zap
+cp ${RELDIR}/repo.list ${BDIR}/etc/zap
+cp ${RELDIR}/*.repo ${BDIR}/etc/zap/repositories
+cp ${RELDIR}/*.ovl ${BDIR}/etc/zap/repositories
 
 cd $BDIR
 #
 PKGNAME="TRIBzap"
-PKGVER=`echo ${RELEASE}|sed s:m:0.:`
-PKGVER=0.${PKGVER}
 #
 cat > pkginfo <<EOF
 PKG="$PKGNAME"

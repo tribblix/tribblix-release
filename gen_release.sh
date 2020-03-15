@@ -9,6 +9,8 @@
 
 # this release
 RELEASE=""
+# this update
+URELEASE=""
 # the architecture (hardware platform) we're releasing
 ARCH=""
 
@@ -16,7 +18,7 @@ usage() {
     if [[ -n $1 ]]; then
 	echo "ERROR: $1"
     fi
-    echo "Usage: $0 -p platform -r release"
+    echo "Usage: $0 -p platform -r release [-m update]"
     exit 1
 }
 
@@ -28,9 +30,26 @@ while getopts p:r:m:v: opt; do
 	r)
 	    RELEASE=$OPTARG
 	    ;;
+	m)
+	    URELEASE=$OPTARG
+	    ;;
     esac
 done
 shift $((OPTIND - 1))
+
+#
+# derived parameters
+#
+PKGVER=`echo ${RELEASE}|sed s:m:0.:`
+OSVERSION=`echo $RELEASE | sed s:lx::`
+if [[ -z $URELEASE ]]; then
+    RELDIR="${RELEASE}.${ARCH}"
+    PKGVER="${PKGVER}.0"
+else
+    RELDIR="${RELEASE}.${URELEASE}.${ARCH}"
+    PKGVER="${PKGVER}.${URELEASE}"
+    OSVERSION="${OSVERSION}.${URELEASE}"
+fi
 
 #
 # parameters for os-release
@@ -39,7 +58,6 @@ shift $((OPTIND - 1))
 # use VARIANT_ID to track variants
 #
 OSNAME="Tribblix"
-OSVERSION=`echo $RELEASE | sed s:lx::`
 OSID="tribblix"
 OSID_LIKE="illumos"
 OSHOME_URL="http://www.tribblix.org/"
@@ -64,8 +82,8 @@ fi
 #
 # check we can find ourself
 #
-if [ ! -d ${RELEASE}.${ARCH} ]; then
-    usage "Cannot find release ${RELEASE}.${ARCH}"
+if [ ! -d ${RELDIR} ]; then
+    usage "Cannot find release ${RELDIR}"
 fi
 
 #
@@ -89,7 +107,7 @@ mkdir $BDIR
 # put the content into place
 #
 mkdir -p ${BDIR}/etc
-cp ${RELEASE}.${ARCH}/release.txt ${BDIR}/etc/release
+cp ${RELDIR}/release.txt ${BDIR}/etc/release
 
 #
 # os-release
@@ -105,7 +123,6 @@ echo "VARIANT_ID=${OSVARIANT_ID}" >> ${BDIR}/etc/os-release
 cd $BDIR
 #
 PKGNAME="TRIBrelease-name"
-PKGVER=`echo ${RELEASE}|sed s:m:0.:`
 #
 cat > pkginfo <<EOF
 PKG="$PKGNAME"

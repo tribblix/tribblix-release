@@ -1,0 +1,35 @@
+This is what the versioning scheme is supposed to look like:
+
+Milestones:
+
+mXX
+
+TRIBrelease-name.0.XX.0
+TRIBzap.0.0.XX.0
+TRIBzap-upgrade.0.XX.0.A [was TRIBzap-upgrade.0.XX.A]
+
+mXX update N (N>0)
+
+TRIBrelease-name.0.XX.N
+TRIBzap.0.0.XX.N
+TRIBzap-upgrade.0.XX.N.A
+
+So, from a package versioning point of view, mXX has an implicit
+update 0 in it.
+
+Releases:
+
+R.X
+
+TRIBrelease-name.R.X.0
+TRIBzap.R.X.0
+TRIBzap-upgrade.R.X.0.A
+
+R.X update N (N>0)
+
+TRIBrelease-name.R.X.N
+TRIBzap.R.X.N
+TRIBzap-upgrade.R.XX.N.A
+
+The basic difference is that TRIBzap used to hae two zeros at the
+front (for reasons unknown).

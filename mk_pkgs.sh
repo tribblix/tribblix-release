@@ -245,8 +245,8 @@ if [[ -n $URELEASE ]]; then
     RPKGVER=${RRELEASE}.${URELEASE}
 else
     THISREL=${RELEASE}
-    ZPKGVER=${ZRELEASE}
-    RPKGVER=${RRELEASE}
+    ZPKGVER=${ZRELEASE}.0
+    RPKGVER=${RRELEASE}.0
 fi
 
 #
@@ -257,14 +257,14 @@ echo "Creating TRIBzap package version ${ZPKGVER} for ${THISREL}.${ARCH}"
 if [[ -n $URELEASE ]]; then
     ./gen_zap.sh -p ${ARCH} -r ${RELEASE} -m ${URELEASE}
 else
-    ./gen_zap.sh -p ${ARCH} -r ${THISREL}
+    ./gen_zap.sh -p ${ARCH} -r ${RELEASE}
 fi
 cp /tmp/pct/TRIBzap.${ZPKGVER}.zap* ../${REPODIR}/${THISREL}.${ARCH}
 echo "Creating TRIBrelease-name package version ${RPKGVER} for ${THISREL}.${ARCH}"
 if [[ -n $URELEASE ]]; then
     ./gen_release.sh -p ${ARCH} -r ${RELEASE} -m ${URELEASE}
 else
-    ./gen_release.sh -p ${ARCH} -r ${THISREL}
+    ./gen_release.sh -p ${ARCH} -r ${RELEASE}
 fi    
 cp /tmp/pct/TRIBrelease-name.${RPKGVER}.zap* ../${REPODIR}/${THISREL}.${ARCH}
 
