@@ -256,11 +256,13 @@ Roll out m22.0
 
 ./mk_pkgs.sh -p sparc -r m22 -u m20
 ./mk_pkgs.sh -p i386 -r m22 -u m21.0
-./mk_pkgs.sh -p i386 -r m22lx -u m21.0
+./mk_pkgs.sh -p i386 -r m22lx -u m21lx.0
 TODO: test those with the upgrade bits
 TODO: fix the lx case so it's a variant
 
-./gen_catalog.sh ../release-repos/m22.0.i386 > ../release-repos/m22.0.i386/catalog
+./gen_catalog.sh ../release-repos/m22.i386 > ../release-repos/m22.i386/catalog
+./gen_catalog.sh ../release-repos/m22lx.i386 > ../release-repos/m22lx.i386/catalog
+./gen_catalog.sh ../release-repos/m22.sparc > ../release-repos/m22.sparc/catalog
 
 The update releases would be
 
@@ -268,6 +270,22 @@ The update releases would be
 ./mk_pkgs.sh -p i386 -r m22lx -m 1
 
 TODO: fix the lx case so it's a variant
+
+Roll out m23
+
+# Clone the configuration
+./mk_pkgs.sh -p i386 -r m23 -c m22
+./mk_pkgs.sh -p i386 -r m23 -v lx -c m22
+./mk_pkgs.sh -p sparc -r m23 -c m22
+# create packages
+./mk_pkgs.sh -p i386 -r m23 -u m22
+./mk_pkgs.sh -p i386 -r m23lx -u m22lx
+./mk_pkgs.sh -p sparc -r m23 -u m20
+# create catalogs
+./gen_catalog.sh ../release-repos/m23.i386 > ../release-repos/m23.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.i386 > ../release-repos/m23lx.i386/catalog
+./gen_catalog.sh ../release-repos/m23.sparc > ../release-repos/m23.sparc/catalog
+
 
 
 To manually generate update packages:
