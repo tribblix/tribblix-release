@@ -146,6 +146,13 @@ if [[ -n $DOCLONE ]]; then
 fi
 
 #
+# if a variant, the release will include the variant name
+#
+if [[ -n $VARIANT ]]; then
+    RELEASE=${RELEASE}${VARIANT}
+fi
+
+#
 # the main release directory must exist
 #
 if [ ! -d ${RELEASE}.${ARCH} ]; then

@@ -285,6 +285,18 @@ Roll out m23
 ./gen_catalog.sh ../release-repos/m23.i386 > ../release-repos/m23.i386/catalog
 ./gen_catalog.sh ../release-repos/m23lx.i386 > ../release-repos/m23lx.i386/catalog
 ./gen_catalog.sh ../release-repos/m23.sparc > ../release-repos/m23.sparc/catalog
+# catalogs for upgrade
+./gen_catalog.sh ../release-repos/m22.i386 >! ../release-repos/m22.i386/catalog
+./gen_catalog.sh ../release-repos/m22lx.i386 >! ../release-repos/m22lx.i386/catalog
+# and upload
+./sync_repo.sh ../release-repos/m22.i386
+./sync_repo.sh ../release-repos/m22lx.i386
+
+For the 1st m23 update it will be:
+
+./mk_pkgs.sh -p i386 -r m23 -m 1
+and for lx (now fixed)
+./mk_pkgs.sh -p i386 -r m23 -v lx -m 1
 
 
 
