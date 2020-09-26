@@ -279,7 +279,7 @@ Roll out m23
 ./mk_pkgs.sh -p sparc -r m23 -c m22
 # create packages
 ./mk_pkgs.sh -p i386 -r m23 -u m22
-./mk_pkgs.sh -p i386 -r m23lx -u m22lx
+./mk_pkgs.sh -p i386 -r m23 -v lx -u m22lx
 ./mk_pkgs.sh -p sparc -r m23 -u m20
 # create catalogs
 ./gen_catalog.sh ../release-repos/m23.i386 > ../release-repos/m23.i386/catalog
@@ -297,7 +297,19 @@ For the 1st m23 update it will be:
 ./mk_pkgs.sh -p i386 -r m23 -m 1
 and for lx (now fixed)
 ./mk_pkgs.sh -p i386 -r m23 -v lx -m 1
-
+# new catalogs
+./gen_catalog.sh ../release-repos/m23.1.i386 > ../release-repos/m23.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.1.i386 > ../release-repos/m23lx.1.i386/catalog
+# update old catalogs
+./gen_catalog.sh ../release-repos/m23.i386 >! ../release-repos/m23.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.i386 >! ../release-repos/m23lx.i386/catalog
+./gen_catalog.sh ../release-repos/m22.i386 >! ../release-repos/m22.i386/catalog
+./gen_catalog.sh ../release-repos/m22lx.i386 >! ../release-repos/m22lx.i386/catalog
+# and upload
+./sync_repo.sh ../release-repos/m22.i386
+./sync_repo.sh ../release-repos/m22lx.i386
+./sync_repo.sh ../release-repos/m23.i386
+./sync_repo.sh ../release-repos/m23lx.i386
 
 
 To manually generate update packages:
