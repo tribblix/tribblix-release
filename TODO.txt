@@ -311,6 +311,51 @@ and for lx (now fixed)
 ./sync_repo.sh ../release-repos/m23.i386
 ./sync_repo.sh ../release-repos/m23lx.i386
 
+For the 2nd m23 update
+
+./mk_pkgs.sh -p i386 -r m23 -m 2
+and for lx (now fixed)
+./mk_pkgs.sh -p i386 -r m23 -v lx -m 2
+# new catalogs
+./gen_catalog.sh ../release-repos/m23.2.i386 > ../release-repos/m23.2.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.2.i386 > ../release-repos/m23lx.2.i386/catalog
+# update old catalogs
+./gen_catalog.sh ../release-repos/m23.1.i386 >! ../release-repos/m23.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.1.i386 >! ../release-repos/m23lx.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23.i386 >! ../release-repos/m23.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.i386 >! ../release-repos/m23lx.i386/catalog
+./gen_catalog.sh ../release-repos/m22.i386 >! ../release-repos/m22.i386/catalog
+./gen_catalog.sh ../release-repos/m22lx.i386 >! ../release-repos/m22lx.i386/catalog
+# and upload
+./sync_repo.sh ../release-repos/m22.i386
+./sync_repo.sh ../release-repos/m22lx.i386
+./sync_repo.sh ../release-repos/m23.i386
+./sync_repo.sh ../release-repos/m23lx.i386
+./sync_repo.sh ../release-repos/m23.1.i386
+./sync_repo.sh ../release-repos/m23lx.1.i386
+
+
+
+
+To backport the updates for m23 so m21.0 can upgrade to it
+
+grep m23 m22.i386/version.list >> m21.0.i386/version.list
+grep m23 m22lx.i386/version.list >> m21lx.0.i386/version.list
+
+./gen_zap_upgrade.sh -p i386 -r m21.0
+./gen_zap_upgrade.sh -p i386 -r m21lx.0
+
+cp /tmp/pct/TRIBzap-upgrade.0.21.0.3.zap* ../release-repos/m21.0.i386/
+cp /tmp/pct/TRIBzap-upgrade.0.21lx.0.3.zap* ../release-repos/m21lx.0.i386/
+
+./gen_catalog.sh ../release-repos/m21.0.i386 >! ../release-repos/m21.0.i386/catalog
+./gen_catalog.sh ../release-repos/m21lx.0.i386 >! ../release-repos/m21lx.0.i386/catalog
+
+./sync_repo.sh ../release-repos/m21.0.i386
+./sync_repo.sh ../release-repos/m21lx.0.i386
+
+
+
 
 To manually generate update packages:
 
