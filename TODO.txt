@@ -335,6 +335,34 @@ and for lx (now fixed)
 ./sync_repo.sh ../release-repos/m23lx.1.i386
 
 
+For the 3rd m23 update
+
+./mk_pkgs.sh -p i386 -r m23 -m 3
+and for lx (now fixed)
+./mk_pkgs.sh -p i386 -r m23 -v lx -m 3
+# new catalogs
+./gen_catalog.sh ../release-repos/m23.3.i386 > ../release-repos/m23.3.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.3.i386 > ../release-repos/m23lx.3.i386/catalog
+# update old catalogs
+./gen_catalog.sh ../release-repos/m23.2.i386 >! ../release-repos/m23.2.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.2.i386 >! ../release-repos/m23lx.2.i386/catalog
+./gen_catalog.sh ../release-repos/m23.1.i386 >! ../release-repos/m23.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.1.i386 >! ../release-repos/m23lx.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23.i386 >! ../release-repos/m23.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.i386 >! ../release-repos/m23lx.i386/catalog
+./gen_catalog.sh ../release-repos/m22.i386 >! ../release-repos/m22.i386/catalog
+./gen_catalog.sh ../release-repos/m22lx.i386 >! ../release-repos/m22lx.i386/catalog
+# and upload
+./sync_repo.sh ../release-repos/m22.i386
+./sync_repo.sh ../release-repos/m22lx.i386
+./sync_repo.sh ../release-repos/m23.i386
+./sync_repo.sh ../release-repos/m23lx.i386
+./sync_repo.sh ../release-repos/m23.1.i386
+./sync_repo.sh ../release-repos/m23lx.1.i386
+./sync_repo.sh ../release-repos/m23.2.i386
+./sync_repo.sh ../release-repos/m23lx.2.i386
+
+
 
 
 To backport the updates for m23 so m21.0 can upgrade to it
