@@ -1,0 +1,4 @@
+NAME=release
+DESC=Tribblix release packages
+URL=https://pkgs.tribblix.org/release-m24lx/
+SIGNED=tribblix
