@@ -500,7 +500,42 @@ Roll out m24
 ./sync_repo.sh ../release-repos/m23.1.i386
 ./sync_repo.sh ../release-repos/m23.2.i386
 ./sync_repo.sh ../release-repos/m23.3.i386
+[done vanilla]
 ./sync_repo.sh ../release-repos/m23lx.i386
 ./sync_repo.sh ../release-repos/m23lx.1.i386
 ./sync_repo.sh ../release-repos/m23lx.2.i386
 ./sync_repo.sh ../release-repos/m23lx.3.i386
+
+Release m24.1
+
+./mk_pkgs.sh -p i386 -r m24 -m 1
+and for lx (now fixed)
+./mk_pkgs.sh -p i386 -r m24 -v lx -m 1
+# new catalogs
+./gen_catalog.sh ../release-repos/m24.1.i386 > ../release-repos/m24.1.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.1.i386 > ../release-repos/m24lx.1.i386/catalog
+# update old catalogs
+./gen_catalog.sh ../release-repos/m24.i386 >! ../release-repos/m24.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.i386 >! ../release-repos/m24lx.i386/catalog
+./gen_catalog.sh ../release-repos/m23.3.i386 >! ../release-repos/m23.3.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.3.i386 >! ../release-repos/m23lx.3.i386/catalog
+./gen_catalog.sh ../release-repos/m23.2.i386 >! ../release-repos/m23.2.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.2.i386 >! ../release-repos/m23lx.2.i386/catalog
+./gen_catalog.sh ../release-repos/m23.1.i386 >! ../release-repos/m23.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.1.i386 >! ../release-repos/m23lx.1.i386/catalog
+./gen_catalog.sh ../release-repos/m23.i386 >! ../release-repos/m23.i386/catalog
+./gen_catalog.sh ../release-repos/m23lx.i386 >! ../release-repos/m23lx.i386/catalog
+#
+# [done to here, nothing uploaded yet]
+#
+# and upload
+./sync_repo.sh ../release-repos/m23.i386
+./sync_repo.sh ../release-repos/m23lx.i386
+./sync_repo.sh ../release-repos/m23.1.i386
+./sync_repo.sh ../release-repos/m23lx.1.i386
+./sync_repo.sh ../release-repos/m23.2.i386
+./sync_repo.sh ../release-repos/m23lx.2.i386
+./sync_repo.sh ../release-repos/m23.3.i386
+./sync_repo.sh ../release-repos/m23lx.3.i386
+./sync_repo.sh ../release-repos/m24.i386
+./sync_repo.sh ../release-repos/m24lx.i386
