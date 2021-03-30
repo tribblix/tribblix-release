@@ -105,7 +105,13 @@ rm -f ${BDIR}/usr/lib/zap/upgrade
 # these empty directories are part of the package
 #
 mkdir -p ${BDIR}/var/zap/cache
+mkdir -p ${BDIR}/var/zap/images
 mkdir -p ${BDIR}/var/zap/zones
+case $RELEASE in
+    *lx*)
+	mkdir -p ${BDIR}/var/zap/docker
+	;;
+esac
 #
 # the zap repo used to contain the metadata
 # so delete it just in case
