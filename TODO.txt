@@ -539,3 +539,40 @@ and for lx (now fixed)
 ./sync_repo.sh ../release-repos/m23lx.3.i386
 ./sync_repo.sh ../release-repos/m24.i386
 ./sync_repo.sh ../release-repos/m24lx.i386
+
+
+
+Roll out m25
+
+# Clone the configuration
+./mk_pkgs.sh -p i386 -r m25 -c m24
+./mk_pkgs.sh -p i386 -r m25 -v lx -c m24
+./mk_pkgs.sh -p sparc -r m25 -c m20
+
+# create packages
+# the duplicate -u is for vanilla<->lx upgrades
+./mk_pkgs.sh -p i386 -r m25 -u m24
+./mk_pkgs.sh -p i386 -r m25 -v lx -u m24
+./mk_pkgs.sh -p i386 -r m25 -u m24lx
+./mk_pkgs.sh -p i386 -r m25 -v lx -u m24lx
+./mk_pkgs.sh -p sparc -r m25 -u m20
+
+# create catalogs
+./gen_catalog.sh ../release-repos/m25.i386 > ../release-repos/m25.i386/catalog
+./gen_catalog.sh ../release-repos/m25lx.i386 > ../release-repos/m25lx.i386/catalog
+./gen_catalog.sh ../release-repos/m25.sparc > ../release-repos/m25.sparc/catalog
+
+# catalogs for upgrade
+./gen_catalog.sh ../release-repos/m24.i386 >! ../release-repos/m24.i386/catalog
+./gen_catalog.sh ../release-repos/m24.1.i386 >! ../release-repos/m24.1.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.i386 >! ../release-repos/m24lx.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.1.i386 >! ../release-repos/m24lx.1.i386/catalog
+
+# and upload
+./sync_repo.sh ../release-repos/m24.i386
+./sync_repo.sh ../release-repos/m24.1.i386
+[done vanilla]
+./sync_repo.sh ../release-repos/m24lx.i386
+./sync_repo.sh ../release-repos/m24lx.1.i386
+
+[should allow upgrades from the m23 series too]
