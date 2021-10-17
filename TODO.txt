@@ -576,3 +576,36 @@ Roll out m25
 ./sync_repo.sh ../release-repos/m24lx.1.i386
 
 [should allow upgrades from the m23 series too]
+
+
+The m25 update 1
+
+Generate Release and upgrade packages
+
+./mk_pkgs.sh -p i386 -r m25 -m 1
+./mk_pkgs.sh -p i386 -r m25 -v lx -m 1
+./gen_catalog.sh ../release-repos/m25.1.i386 > ../release-repos/m25.1.i386/catalog
+./gen_catalog.sh ../release-repos/m25lx.1.i386 > ../release-repos/m25lx.1.i386/catalog
+
+Upload the release packages
+
+cd /packages/localsrc/Tribblix/release-repos/m25.1.i386
+scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25.1
+cd /packages/localsrc/Tribblix/release-repos/m25lx.1.i386
+scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25lx.1
+
+And handle upgades
+# catalogs for upgrade
+./gen_catalog.sh ../release-repos/m25.i386 >! ../release-repos/m25.i386/catalog
+./gen_catalog.sh ../release-repos/m25lx.i386 >! ../release-repos/m25lx.i386/catalog
+./gen_catalog.sh ../release-repos/m24.i386 >! ../release-repos/m24.i386/catalog
+./gen_catalog.sh ../release-repos/m24.1.i386 >! ../release-repos/m24.1.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.i386 >! ../release-repos/m24lx.i386/catalog
+./gen_catalog.sh ../release-repos/m24lx.1.i386 >! ../release-repos/m24lx.1.i386/catalog
+# and upload
+./sync_repo.sh ../release-repos/m25.i386
+./sync_repo.sh ../release-repos/m25lx.i386
+./sync_repo.sh ../release-repos/m24.i386
+./sync_repo.sh ../release-repos/m24.1.i386
+./sync_repo.sh ../release-repos/m24lx.i386
+./sync_repo.sh ../release-repos/m24lx.1.i386
