@@ -17,7 +17,7 @@ usage() {
     exit 1
 }
 
-while getopts p:r:m:v: opt; do
+while getopts p:r: opt; do
     case $opt in
 	p)
 	    ARCH=$OPTARG

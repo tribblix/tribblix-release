@@ -19,11 +19,11 @@ usage() {
     if [[ -n $1 ]]; then
 	echo "ERROR: $1"
     fi
-    echo "Usage: $0 -p platform -r release"
+    echo "Usage: $0 -p platform -r release [-m update]"
     exit 1
 }
 
-while getopts p:r:m:v: opt; do
+while getopts p:r:m: opt; do
     case $opt in
 	p)
 	    ARCH=$OPTARG
