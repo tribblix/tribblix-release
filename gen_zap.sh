@@ -112,6 +112,20 @@ case $RELEASE in
 	mkdir -p ${BDIR}/var/zap/docker
 	;;
 esac
+
+#
+# construct deprecation lists for this platform from the common files
+# and the platform-specific files
+#
+if [ -f ${BDIR}/usr/share/zap/deprecated.pkgs.${ARCH} ]; then
+    cat ${BDIR}/usr/share/zap/deprecated.pkgs.${ARCH} >> ${BDIR}/usr/share/zap/deprecated.pkgs
+fi
+rm -f ${BDIR}/usr/share/zap/deprecated.pkgs.*
+if [ -f ${BDIR}/usr/share/zap/deprecated.ovl.${ARCH} ]; then
+    cat ${BDIR}/usr/share/zap/deprecated.ovl.${ARCH} >> ${BDIR}/usr/share/zap/deprecated.ovl
+fi
+rm -f ${BDIR}/usr/share/zap/deprecated.ovl.*
+
 #
 # the zap repo used to contain the metadata
 # so delete it just in case
@@ -120,6 +134,7 @@ rm -f ${BDIR}/etc/zap/repo.list.i386
 rm -f ${BDIR}/etc/zap/repo.list.sparc
 rm -f ${BDIR}/etc/zap/overlays.list
 rm -fr ${BDIR}/etc/zap/repositories
+
 #
 # and copy the current metadata
 #
