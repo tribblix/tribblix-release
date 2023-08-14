@@ -594,7 +594,7 @@ scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25.1
 cd /packages/localsrc/Tribblix/release-repos/m25lx.1.i386
 scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25lx.1
 
-And handle upgades
+And handle upgrades
 # catalogs for upgrade
 ./gen_catalog.sh ../release-repos/m25.i386 >! ../release-repos/m25.i386/catalog
 ./gen_catalog.sh ../release-repos/m25lx.i386 >! ../release-repos/m25lx.i386/catalog
@@ -626,7 +626,7 @@ scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25.3
 cd /packages/localsrc/Tribblix/release-repos/m25lx.3.i386
 scp *.zap *.zap.sig catalog pkgs.tribblix.org:/var/repo/release-m25lx.3
 
-And handle upgades
+And handle upgrades
 # catalogs for upgrade
 ./gen_catalog.sh ../release-repos/m25.2.i386 >! ../release-repos/m25.2.i386/catalog
 ./gen_catalog.sh ../release-repos/m25.1.i386 >! ../release-repos/m25.1.i386/catalog
