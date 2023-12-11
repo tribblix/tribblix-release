@@ -295,7 +295,7 @@ if [[ -n $URELEASE ]]; then
     do
 	if [ -d ${ugr} ]; then
 	    NVER=`echo $ugr|sed s:.${ARCH}::`
-	    GOTVER=`nawk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
+	    GOTVER=`awk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
 	    if [[ -z $GOTVER ]]; then
 		cat ${THISREL}.${ARCH}/version.list >> ${ugr}/version.list
 	    fi
@@ -322,7 +322,7 @@ do
     do
 	if [ -d ${ugr} ]; then
 	    NVER=`echo $ugr|sed s:.${ARCH}::`
-	    GOTVER=`nawk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
+	    GOTVER=`awk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
 	    if [[ -z $GOTVER ]]; then
 		cat ${THISREL}.${ARCH}/version.list >> ${ugr}/version.list
 	    fi
