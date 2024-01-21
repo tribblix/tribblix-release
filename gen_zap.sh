@@ -115,15 +115,47 @@ esac
 
 #
 # construct deprecation lists for this platform from the common files
-# and the platform-specific files
+# and the architecture-specific files
 #
 if [ -f ${BDIR}/usr/share/zap/deprecated.pkgs.${ARCH} ]; then
     cat ${BDIR}/usr/share/zap/deprecated.pkgs.${ARCH} >> ${BDIR}/usr/share/zap/deprecated.pkgs
 fi
-rm -f ${BDIR}/usr/share/zap/deprecated.pkgs.*
 if [ -f ${BDIR}/usr/share/zap/deprecated.ovl.${ARCH} ]; then
     cat ${BDIR}/usr/share/zap/deprecated.ovl.${ARCH} >> ${BDIR}/usr/share/zap/deprecated.ovl
 fi
+
+#
+# we use the deprecation mechanism to also handle the case of transitioning
+# between lx and vanilla, so that any packages from lx that shouldn't exist
+# in vanilla (eg lx itself) get removed on upgrade
+#
+# which way round?
+# the deprecation fragment for lx should be the packages *from* lx
+# that need to be removed
+#
+# we only do this on i386, because sparc doesn't have multiple variants
+#
+ALTVARIANT="lx"
+case $RELEASE in
+    *lx*)
+	ALTVARIANT="vanilla"
+	;;
+esac
+case $ARCH in
+    i386)
+	if [ -f ${BDIR}/usr/share/zap/deprecated.pkgs.${ALTVARIANT} ]; then
+	    cat ${BDIR}/usr/share/zap/deprecated.pkgs.${ALTVARIANT} >> ${BDIR}/usr/share/zap/deprecated.pkgs
+	fi
+	if [ -f ${BDIR}/usr/share/zap/deprecated.ovl.${ALTVARIANT} ]; then
+	    cat ${BDIR}/usr/share/zap/deprecated.ovl.${ALTVARIANT} >> ${BDIR}/usr/share/zap/deprecated.ovl
+	fi
+    ;;
+esac
+
+#
+# remove any deprecation fragments
+#
+rm -f ${BDIR}/usr/share/zap/deprecated.pkgs.*
 rm -f ${BDIR}/usr/share/zap/deprecated.ovl.*
 
 #
