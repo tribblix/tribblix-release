@@ -12,9 +12,13 @@ case $# in
 	;;
 esac
 
-if [ ! -d "$PKGDIR" ]; then
-    echo "ERROR: cannot find $PKGDIR"
+bail() {
+    echo "ERROR: $1"
     exit 1
+}
+
+if [ ! -d "$PKGDIR" ]; then
+    bail "cannot find $PKGDIR"
 fi
 
 RELNAME=${PKGDIR##*/}
@@ -27,15 +31,14 @@ case $RELNAME in
 	RELDIR="release-${RELNAME%.i386}"
 	;;
     *)
-	echo "Unrecognized architecture"
-	exit 1
+	bail "Unrecognized architecture"
 	;;
 esac
 
 REPOHOST="pkgs.tribblix.org"
 REPOROOT="/var/repo"
 
-cd $PKGDIR
-ZAPFILE=`ls -1tr TRIBzap-upgrade.*zap|tail -1`
-echo scp catalog ${ZAPFILE} ${ZAPFILE}.sig ${REPOHOST}:${REPOROOT}/${RELDIR}
-scp catalog ${ZAPFILE} ${ZAPFILE}.sig ${REPOHOST}:${REPOROOT}/${RELDIR}
+cd "$PKGDIR" || bail "cd failed"
+ZAPFILE=$(ls -1tr TRIBzap-upgrade.*zap|tail -1)
+echo scp catalog "${ZAPFILE}" "${ZAPFILE}.sig" "${REPOHOST}:${REPOROOT}/${RELDIR}"
+scp catalog "${ZAPFILE}" "${ZAPFILE}.sig" "${REPOHOST}:${REPOROOT}/${RELDIR}"

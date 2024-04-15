@@ -21,21 +21,21 @@ esac
 # the release package (those two never change)
 # and the most recent upgrade package
 #
-cd $PKGDIR
-for ZPKG in TRIBzap.*.zap TRIBrelease*.zap `ls -1tr TRIBzap-upgrade.*zap|tail -1`
+cd "$PKGDIR" || exit 1
+for ZPKG in TRIBzap.*.zap TRIBrelease*.zap $(ls -1tr TRIBzap-upgrade.*zap|tail -1)
 do
   DEPLIST=""
   PNAME=${ZPKG%%.*}
   PF=${ZPKG%.zap}
   PKGVERS=${PF#*.}
-  PKGSIZE=`/bin/ls -l ${ZPKG} | /usr/bin/awk '{print $5}'`
-  if [ ${ZPKG}.md5 -nt ${ZPKG} ]; then
-    PKGMD5=`/bin/cat ${ZPKG}.md5`
+  PKGSIZE=$(/bin/ls -l "${ZPKG}" | /usr/bin/awk '{print $5}')
+  if [ "${ZPKG}.md5" -nt "${ZPKG}" ]; then
+    PKGMD5=$(/bin/cat "${ZPKG}.md5")
   else
-    PKGMD5=`openssl md5 ${ZPKG} | /usr/bin/awk '{print $NF}'`
-    /bin/rm -f ${ZPKG}.md5
-    echo $PKGMD5 > ${ZPKG}.md5
+    PKGMD5=$(openssl md5 "${ZPKG}" | /usr/bin/awk '{print $NF}')
+    /bin/rm -f "${ZPKG}.md5"
+    echo "$PKGMD5" > "${ZPKG}.md5"
   fi
-  DEPLIST=`bash zipgrep '^P' $ZPKG ${PNAME}/install/depend 2>/dev/null |awk '{printf("%s ", $2)}'`
+  DEPLIST=$(bash zipgrep '^P' "$ZPKG" "${PNAME}/install/depend" 2>/dev/null |awk '{printf("%s ", $2)}')
   echo "${PNAME}|${PKGVERS}|${DEPLIST}|${PKGSIZE}|${PKGMD5}|" | sed 's: |:|:'
 done
