@@ -1,5 +1,7 @@
 #!/bin/ksh
 #
+# SPDX-License-Identifier: CDDL-1.0
+#
 # create the packages for a release
 #
 # there are 3 packages that define a release:
@@ -96,7 +98,7 @@ if [[ -n $DOCLONE ]]; then
     if [[ -n $URELEASE ]]; then
 	usage "cannot clone with a micro release"
     fi
-    if [ ! -d ${DOCLONE}.${ARCH} ]; then
+    if [ ! -d "${DOCLONE}.${ARCH}" ]; then
 	usage "Cannot find $DOCLONE to act as clone source"
     fi
     #
@@ -116,28 +118,28 @@ if [[ -n $DOCLONE ]]; then
 		;;
 	esac
     fi
-    if [ -d ${RELEASE}.${ARCH} ]; then
+    if [ -d "${RELEASE}.${ARCH}" ]; then
 	usage "New release ${RELEASE}.${ARCH} already exists"
     else
 	echo "Creating ${RELEASE}.${ARCH}"
 	if [[ -z $RELTEXT ]]; then
 	    RELTEXT="${DISTRONAME} ${TRELEASE}"
 	fi
-	mkdir -p ${RELEASE}.${ARCH}
-	if [ -d ${RELEASE}.${ARCH} ]; then
-	    cp ${DOCLONE}.${ARCH}/* ${RELEASE}.${ARCH}
-	    gsed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: ${RELEASE}.${ARCH}/tribblix.ovl
-	    gsed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: ${RELEASE}.${ARCH}/tribblix.repo
-	    gsed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: ${RELEASE}.${ARCH}/illumos.repo
-	    gsed -i s:/release-${DOCLONE}:/release-${RELEASE}: ${RELEASE}.${ARCH}/release.repo
+	mkdir -p "${RELEASE}.${ARCH}"
+	if [ -d "${RELEASE}.${ARCH}" ]; then
+	    cp "${DOCLONE}.${ARCH}"/* "${RELEASE}.${ARCH}"
+	    gsed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: "${RELEASE}.${ARCH}/tribblix.ovl"
+	    gsed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.repo"
+	    gsed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: "${RELEASE}.${ARCH}/illumos.repo"
+	    gsed -i s:/release-${DOCLONE}:/release-${RELEASE}: "${RELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
-	    echo "${RELTEXT}" > ${RELEASE}.${ARCH}/release.txt
+	    echo "${RELTEXT}" > "${RELEASE}.${ARCH}/release.txt"
 	    # current version for upgrader
-	    echo ${RELEASE} > ${RELEASE}.${ARCH}/version.current
-	    UGURL=`grep '^URL=' ${RELEASE}.${ARCH}/release.repo | sed s:URL=::`
+	    echo "${RELEASE}" > "${RELEASE}.${ARCH}/version.current"
+	    UGURL=$(grep '^URL=' "${RELEASE}.${ARCH}/release.repo" | sed s:URL=::)
 	    # milestone releases have different numbering
-	    NRELEASE=`echo ${RELEASE}|sed s:m:0.0.:`
-	    echo "${RELEASE}|${UGURL}TRIBzap.${NRELEASE}.0.zap|${RELTEXT}" > ${RELEASE}.${ARCH}/version.list
+	    NRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
+	    echo "${RELEASE}|${UGURL}TRIBzap.${NRELEASE}.0.zap|${RELTEXT}" > "${RELEASE}.${ARCH}/version.list"
 	    exit 0
 	else
 	    usage "Cannot create ${RELEASE}.${ARCH}"
@@ -155,7 +157,7 @@ fi
 #
 # the main release directory must exist
 #
-if [ ! -d ${RELEASE}.${ARCH} ]; then
+if [ ! -d "${RELEASE}.${ARCH}" ]; then
     usage "Release directory ${RELEASE}.${ARCH} must exist"
 fi
 
@@ -169,8 +171,8 @@ if [[ -n $URELEASE ]]; then
     if [[ -n $UGLIST ]]; then
 	usage "Cannot specify an upgrade list with a micro release"
     fi
-    if [ -f ${RELEASE}.${ARCH}/upgrade.list ]; then
-	UGLIST=`cat ${RELEASE}.${ARCH}/upgrade.list`
+    if [ -f "${RELEASE}.${ARCH}/upgrade.list" ]; then
+	UGLIST=$(cat "${RELEASE}.${ARCH}/upgrade.list")
     else
 	usage "Unable to find upgrade list"
     fi
@@ -191,7 +193,7 @@ fi
 #
 for ugr in $UGLIST
 do
-    if [ ! -d ${ugr}.${ARCH} ]; then
+    if [ ! -d "${ugr}.${ARCH}" ]; then
 	usage "Upgradeable directory ${ugr}.${ARCH} must exist"
     fi
 done
@@ -202,7 +204,7 @@ done
 # the list will only have content if we're not creating a micro release
 #
 if [[ -n $UGLIST ]]; then
-    echo "$UGLIST" > ${RELEASE}.${ARCH}/upgrade.list
+    echo "$UGLIST" > "${RELEASE}.${ARCH}/upgrade.list"
 fi
 
 #
@@ -212,22 +214,22 @@ fi
 # repositories are shared between micro releases based on a given release
 #
 if [[ -n $URELEASE ]]; then
-    if [ ! -d ${RELEASE}.${URELEASE}.${ARCH} ]; then
+    if [ ! -d "${RELEASE}.${URELEASE}.${ARCH}" ]; then
 	echo "Creating ${RELEASE}.${URELEASE}.${ARCH}"
-	mkdir -p ${RELEASE}.${URELEASE}.${ARCH}
-	if [ -d ${RELEASE}.${URELEASE}.${ARCH} ]; then
-	    cp ${RELEASE}.${ARCH}/* ${RELEASE}.${URELEASE}.${ARCH}
-	    gsed -i s:/illumos-${RELEASE}:/illumos-${RELEASE}.${URELEASE}: ${RELEASE}.${URELEASE}.${ARCH}/illumos.repo
-	    gsed -i s:/release-${RELEASE}:/release-${RELEASE}.${URELEASE}: ${RELEASE}.${URELEASE}.${ARCH}/release.repo
+	mkdir -p "${RELEASE}.${URELEASE}.${ARCH}"
+	if [ -d "${RELEASE}.${URELEASE}.${ARCH}" ]; then
+	    cp "${RELEASE}.${ARCH}"/* "${RELEASE}.${URELEASE}.${ARCH}"
+	    gsed -i s:/illumos-${RELEASE}:/illumos-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/illumos.repo"
+	    gsed -i s:/release-${RELEASE}:/release-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
-	    RELTEXT=`cat ${RELEASE}.${ARCH}/release.txt`
-	    echo "${RELTEXT} update ${URELEASE}" > ${RELEASE}.${URELEASE}.${ARCH}/release.txt
+	    RELTEXT=$(cat "${RELEASE}.${ARCH}/release.txt")
+	    echo "${RELTEXT} update ${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/release.txt"
 	    # current version for upgrader
-	    echo ${RELEASE}.${URELEASE} > ${RELEASE}.${URELEASE}.${ARCH}/version.current
-	    UGURL=`grep '^URL=' ${RELEASE}.${URELEASE}.${ARCH}/release.repo | sed s:URL=::`
+	    echo "${RELEASE}.${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/version.current"
+	    UGURL=$(grep '^URL=' "${RELEASE}.${URELEASE}.${ARCH}/release.repo" | sed s:URL=::)
 	    # milestone releases have different numbering
-	    NRELEASE=`echo ${RELEASE}|sed s:m:0.0.:`
-	    echo "${RELEASE}.${URELEASE}|${UGURL}TRIBzap.${NRELEASE}.${URELEASE}.zap|${RELTEXT} update ${URELEASE}" > ${RELEASE}.${URELEASE}.${ARCH}/version.list
+	    NRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
+	    echo "${RELEASE}.${URELEASE}|${UGURL}TRIBzap.${NRELEASE}.${URELEASE}.zap|${RELTEXT} update ${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/version.list"
 	else
 	    usage "Cannot create ${RELEASE}.${URELEASE}.${ARCH}"
 	fi
@@ -244,8 +246,8 @@ echo "URELEASE: $URELEASE"
 # construct package versions
 # milestone releases have different numbering
 #
-ZRELEASE=`echo ${RELEASE}|sed s:m:0.0.:`
-RRELEASE=`echo ${RELEASE}|sed s:m:0.:`
+ZRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
+RRELEASE=$(echo "${RELEASE}"|sed s:m:0.:)
 if [[ -n $URELEASE ]]; then
     THISREL=${RELEASE}.${URELEASE}
     ZPKGVER=${ZRELEASE}.${URELEASE}
@@ -259,21 +261,21 @@ fi
 #
 # there's just one zap and release-name package and its version is fixed
 #
-mkdir -p ../${REPODIR}/${THISREL}.${ARCH}
+mkdir -p "../${REPODIR}/${THISREL}.${ARCH}"
 echo "Creating TRIBzap package version ${ZPKGVER} for ${THISREL}.${ARCH}"
 if [[ -n $URELEASE ]]; then
-    ./gen_zap.sh -p ${ARCH} -r ${RELEASE} -m ${URELEASE}
+    ./gen_zap.sh -p "${ARCH}" -r "${RELEASE}" -m "${URELEASE}"
 else
-    ./gen_zap.sh -p ${ARCH} -r ${RELEASE}
+    ./gen_zap.sh -p "${ARCH}" -r "${RELEASE}"
 fi
-cp /tmp/pct/TRIBzap.${ZPKGVER}.zap* ../${REPODIR}/${THISREL}.${ARCH}
+cp /tmp/pct/TRIBzap."${ZPKGVER}".zap* "../${REPODIR}/${THISREL}.${ARCH}"
 echo "Creating TRIBrelease-name package version ${RPKGVER} for ${THISREL}.${ARCH}"
 if [[ -n $URELEASE ]]; then
-    ./gen_release.sh -p ${ARCH} -r ${RELEASE} -m ${URELEASE}
+    ./gen_release.sh -p "${ARCH}" -r "${RELEASE}" -m "${URELEASE}"
 else
-    ./gen_release.sh -p ${ARCH} -r ${RELEASE}
+    ./gen_release.sh -p "${ARCH}" -r "${RELEASE}"
 fi    
-cp /tmp/pct/TRIBrelease-name.${RPKGVER}.zap* ../${REPODIR}/${THISREL}.${ARCH}
+cp /tmp/pct/TRIBrelease-name."${RPKGVER}".zap* "../${REPODIR}/${THISREL}.${ARCH}"
 
 #
 # now construct the list of potential upgrade targets
@@ -289,51 +291,51 @@ cp /tmp/pct/TRIBrelease-name.${RPKGVER}.zap* ../${REPODIR}/${THISREL}.${ARCH}
 # the one from the target release, if it's not already there
 #
 
-NRELEASE=`echo ${RELEASE}|sed s:m:0.:`
+NRELEASE=$(echo "${RELEASE}"|sed s:m:0.:)
 if [[ -n $URELEASE ]]; then
-    for ugr in ${RELEASE}.*.${ARCH} ${RELEASE}.${ARCH}
+    for ugr in "${RELEASE}".*."${ARCH}" "${RELEASE}.${ARCH}"
     do
-	if [ -d ${ugr} ]; then
-	    NVER=`echo $ugr|sed s:.${ARCH}::`
-	    GOTVER=`awk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
+	if [ -d "${ugr}" ]; then
+	    NVER=$(echo "$ugr"|sed s:.${ARCH}::)
+	    GOTVER=$(awk -F'|' -v rver="$THISREL" '{if ($1 == rver) print}' "${ugr}/version.list")
 	    if [[ -z $GOTVER ]]; then
-		cat ${THISREL}.${ARCH}/version.list >> ${ugr}/version.list
+		cat "${THISREL}.${ARCH}/version.list" >> "${ugr}/version.list"
 	    fi
-	    UVER=`wc -l ${ugr}/version.list|awk '{print $1}'`
+	    UVER=$(wc -l "${ugr}/version.list"|awk '{print $1}')
 	    UVER=$((UVER-1))
-	    NRELEASE=`echo ${NVER}|sed s:m:0.:`
+	    NRELEASE=$(echo "${NVER}"|sed s:m:0.:)
 	    PKGVER="${NRELEASE}.${UVER}"
 	    echo "Creating TRIBzap-upgrade package version ${PKGVER} for ${ugr}"
-	    mkdir -p ../${REPODIR}/${ugr}
-	    ./gen_zap_upgrade.sh -p ${ARCH} -r ${NVER}
-	    cp /tmp/pct/TRIBzap-upgrade.${PKGVER}.zap* ../${REPODIR}/${ugr}
+	    mkdir -p "../${REPODIR}/${ugr}"
+	    ./gen_zap_upgrade.sh -p "${ARCH}" -r "${NVER}"
+	    cp /tmp/pct/TRIBzap-upgrade."${PKGVER}".zap* "../${REPODIR}/${ugr}"
 	fi
     done
 else
     PKGVER="${NRELEASE}.0"
     echo "Creating TRIBzap-upgrade package version ${PKGVER} for ${RELEASE}.${ARCH}"
-    mkdir -p ../${REPODIR}/${RELEASE}.${ARCH}
-    ./gen_zap_upgrade.sh -p ${ARCH} -r ${RELEASE}
-    cp /tmp/pct/TRIBzap-upgrade.${PKGVER}.zap* ../${REPODIR}/${RELEASE}.${ARCH}
+    mkdir -p "../${REPODIR}/${RELEASE}.${ARCH}"
+    ./gen_zap_upgrade.sh -p "${ARCH}" -r "${RELEASE}"
+    cp /tmp/pct/TRIBzap-upgrade."${PKGVER}".zap* "../${REPODIR}/${RELEASE}.${ARCH}"
 fi
 for ug in $UGLIST
 do
-    for ugr in `echo ${ug}{.*,}.${ARCH}`
+    for ugr in $(echo ${ug}{.*,}.${ARCH})
     do
-	if [ -d ${ugr} ]; then
-	    NVER=`echo $ugr|sed s:.${ARCH}::`
-	    GOTVER=`awk -F'|' -v rver=$THISREL '{if ($1 == rver) print}' ${ugr}/version.list`
+	if [ -d "${ugr}" ]; then
+	    NVER=$(echo "$ugr"|sed s:.${ARCH}::)
+	    GOTVER=$(awk -F'|' -v rver="$THISREL" '{if ($1 == rver) print}' "${ugr}/version.list")
 	    if [[ -z $GOTVER ]]; then
-		cat ${THISREL}.${ARCH}/version.list >> ${ugr}/version.list
+		cat "${THISREL}.${ARCH}/version.list" >> "${ugr}/version.list"
 	    fi
-	    UVER=`wc -l ${ugr}/version.list|awk '{print $1}'`
+	    UVER=$(wc -l "${ugr}/version.list"|awk '{print $1}')
 	    UVER=$((UVER-1))
-	    NRELEASE=`echo ${NVER}|sed s:m:0.:`
+	    NRELEASE=$(echo "${NVER}"|sed s:m:0.:)
 	    PKGVER="${NRELEASE}.${UVER}"
 	    echo "Creating TRIBzap-upgrade package version ${PKGVER} for ${ugr}"
-	    mkdir -p ../${REPODIR}/${ugr}
-	    ./gen_zap_upgrade.sh -p ${ARCH} -r ${NVER}
-	    cp /tmp/pct/TRIBzap-upgrade.${PKGVER}.zap* ../${REPODIR}/${ugr}
+	    mkdir -p "../${REPODIR}/${ugr}"
+	    ./gen_zap_upgrade.sh -p "${ARCH}" -r "${NVER}"
+	    cp /tmp/pct/TRIBzap-upgrade."${PKGVER}".zap* "../${REPODIR}/${ugr}"
 	fi
     done
 done

@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# SPDX-License-Identifier: CDDL-1.0
+#
 # creates a zap package
 #
 THOME=${THOME:-/packages/localsrc/Tribblix}
@@ -41,14 +43,14 @@ fi
 #
 # check we can find ourself
 #
-if [ ! -d ${RELEASE}.${ARCH} ]; then
+if [ ! -d "${RELEASE}.${ARCH}" ]; then
     usage "Cannot find release ${RELEASE}.${ARCH}"
 fi
 
 #
 # define where we're going to create the package
 #
-BUILD=`pwd`
+BUILD=$(pwd)
 BROOT="/tmp/pct"
 if [ ! -d $BROOT ]; then
    mkdir -p ${BROOT}
@@ -61,7 +63,7 @@ fi
 #
 # verify the content exists
 #
-if [ ! -d ${THOME}/zap ]; then
+if [ ! -d "${THOME}/zap" ]; then
     echo "Cannot find source for zap, it should be at ${THOME}/zap"
     exit 1
 fi
@@ -74,16 +76,16 @@ mkdir $BDIR
 # put the content into place
 #
 mkdir -p ${BDIR}/usr/lib/zap
-cp ${THOME}/zap/usr/lib/zap/upgrade ${BDIR}/usr/lib/zap
+cp "${THOME}/zap/usr/lib/zap/upgrade" ${BDIR}/usr/lib/zap
 mkdir -p ${BDIR}/etc/zap
-cp ${RELEASE}.${ARCH}/version.current ${BDIR}/etc/zap
-cp ${RELEASE}.${ARCH}/version.list ${BDIR}/etc/zap
+cp "${RELEASE}.${ARCH}/version.current" ${BDIR}/etc/zap
+cp "${RELEASE}.${ARCH}/version.list" ${BDIR}/etc/zap
 
-cd $BDIR
+cd $BDIR || exit 1
 #
 PKGNAME="TRIBzap-upgrade"
-PKGVER=`echo ${RELEASE}|sed s:m:0.:`
-UVER=`wc -l etc/zap/version.list|awk '{print $1}'`
+PKGVER=$(echo "${RELEASE}"|sed s:m:0.:)
+UVER=$(wc -l etc/zap/version.list|awk '{print $1}')
 UVER=$((UVER-1))
 PKGVER=${PKGVER}.${UVER}
 
@@ -94,39 +96,39 @@ NAME="Tribblix upgrade identifier"
 VERSION="$PKGVER"
 EOF
 echo "ARCH=\"$ARCH\"" >> pkginfo
-cat ${BUILD}/pkginfo.base >> pkginfo
+cat "${BUILD}/pkginfo.base" >> pkginfo
 echo "i pkginfo=./pkginfo" > pp.$$
-(cd ${BDIR} ; pkgproto etc | ${BUILD}/fixproto) >> pp.$$
-(cd ${BDIR} ; pkgproto usr | ${BUILD}/fixproto) >> pp.$$
+(cd ${BDIR} ; pkgproto etc | "${BUILD}"/fixproto) >> pp.$$
+(cd ${BDIR} ; pkgproto usr | "${BUILD}"/fixproto) >> pp.$$
 
 
 # create the package
 pkgmk -d ${BROOT} -f pp.$$ -r ${BDIR} ${PKGNAME}
 /usr/bin/rm pp.$$
-pkgtrans -s ${BROOT} ${BROOT}/${PKGNAME}.${PKGVER}.pkg ${PKGNAME}
+pkgtrans -s ${BROOT} "${BROOT}/${PKGNAME}.${PKGVER}.pkg" ${PKGNAME}
 # create the zap file
-cd $BROOT
+cd $BROOT || exit 1
 # 7z gives us an extra 2-3% reduction in file size
 #zip -9 -q -r ${PKGNAME} ${PKGNAME}
-rm -f ${PKGNAME}.${PKGVER}.zap ${PKGNAME}.${PKGVER}.zap.md5 ${PKGNAME}.${PKGVER}.zap.sig
-7za a -tzip -mx=9 -mfb=256 ${PKGNAME}.${PKGVER}.zap ${PKGNAME}
-chmod a+r ${PKGNAME}.${PKGVER}.zap
+rm -f "${PKGNAME}.${PKGVER}.zap" "${PKGNAME}.${PKGVER}.zap.md5" "${PKGNAME}.${PKGVER}.zap.sig"
+7za a -tzip -mx=9 -mfb=256 "${PKGNAME}.${PKGVER}.zap" ${PKGNAME}
+chmod a+r "${PKGNAME}.${PKGVER}.zap"
 cd /
 # pregenerate the md5 checksum ready for catalog creation
-openssl md5 ${BROOT}/${PKGNAME}.${PKGVER}.zap| /usr/bin/awk '{print $NF}' > ${BROOT}/${PKGNAME}.${PKGVER}.zap.md5
+openssl md5 "${BROOT}/${PKGNAME}.${PKGVER}.zap" | /usr/bin/awk '{print $NF}' > "${BROOT}/${PKGNAME}.${PKGVER}.zap.md5"
 # if the passphrase file exists, sign the package
 # otherwise, it will have to be signed manually
-if [ -f ${HOME}/Tribblix/Sign.phrase ]; then
+if [ -f "${HOME}/Tribblix/Sign.phrase" ]; then
     echo ""
     echo "Signing package."
     echo ""
-    gpg --detach-sign --no-secmem-warning --passphrase-file ${HOME}/Tribblix/Sign.phrase ${BROOT}/${PKGNAME}.${PKGVER}.zap
-    if [ -f ${BROOT}/${PKGNAME}.${PKGVER}.zap.sig ]; then
+    gpg --detach-sign --no-secmem-warning --passphrase-file "${HOME}/Tribblix/Sign.phrase" "${BROOT}/${PKGNAME}.${PKGVER}.zap"
+    if [ -f "${BROOT}/${PKGNAME}.${PKGVER}.zap.sig" ]; then
 	echo "Package signed successfully."
 	echo ""
     fi
 fi
-ls -lh ${BROOT}/${PKGNAME}.${PKGVER}.pkg
-ls -lh ${BROOT}/${PKGNAME}.${PKGVER}.zap
-rm -fr ${BROOT}/${PKGNAME}
+ls -lh "${BROOT}/${PKGNAME}.${PKGVER}.pkg"
+ls -lh "${BROOT}/${PKGNAME}.${PKGVER}.zap"
+rm -fr "${BROOT}/${PKGNAME}"
 rm -fr $BDIR

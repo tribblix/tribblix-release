@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# SPDX-License-Identifier: CDDL-1.0
+#
 # update a catalog and edit it
 #
 if [ ! -d "$1" ]; then
