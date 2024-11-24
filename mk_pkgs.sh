@@ -274,7 +274,7 @@ if [[ -n $URELEASE ]]; then
     ./gen_release.sh -p "${ARCH}" -r "${RELEASE}" -m "${URELEASE}"
 else
     ./gen_release.sh -p "${ARCH}" -r "${RELEASE}"
-fi    
+fi
 cp /tmp/pct/TRIBrelease-name."${RPKGVER}".zap* "../${REPODIR}/${THISREL}.${ARCH}"
 
 #
