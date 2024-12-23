@@ -90,12 +90,12 @@ different; also need a different set of overlays (to make sure lx gets
 installed, amongst other things)
 
 cp -r m20.i386 m20lx.1.i386
-gsed -i s:m20:m20lx.1: illumos.repo
-gsed -i s:m20:m20lx.1: release.repo
-gsed -i s:m20:m20.1: release.txt
-gsed -i s:Tribblix:OmniTribblix: release.txt
-gsed -i s:m20:m20lx: tribblix.ovl
-gsed -i s:m20:m20lx.1: version.current
+sed -i s:m20:m20lx.1: illumos.repo
+sed -i s:m20:m20lx.1: release.repo
+sed -i s:m20:m20.1: release.txt
+sed -i s:Tribblix:OmniTribblix: release.txt
+sed -i s:m20:m20lx: tribblix.ovl
+sed -i s:m20:m20lx.1: version.current
 echo "m20lx.1|http://pkgs.tribblix.org/release-m20lx.1/TRIBzap.0.0.20lx.1.zap|OmniTribblix m20.1" > version.list
 
 ./gen_release.sh -p i386 -r m20 -m 1 -v lx
@@ -109,10 +109,10 @@ And for update 2 of lx:
 
 cp -r m20lx.1.i386 m20lx.2.i386
 cd m20lx.2.i386
-gsed -i s:m20lx.1:m20lx.2: illumos.repo
-gsed -i s:m20lx.1:m20lx.2: release.repo
-gsed -i s:m20.1:m20.2: release.txt
-gsed -i s:m20lx.1:m20lx.2: version.current
+sed -i s:m20lx.1:m20lx.2: illumos.repo
+sed -i s:m20lx.1:m20lx.2: release.repo
+sed -i s:m20.1:m20.2: release.txt
+sed -i s:m20lx.1:m20lx.2: version.current
 echo "m20lx.2|http://pkgs.tribblix.org/release-m20lx.2/TRIBzap.0.0.20lx.2.zap|OmniTribblix m20.2" >! version.list
 cd ..
 

@@ -128,10 +128,10 @@ if [[ -n $DOCLONE ]]; then
 	mkdir -p "${RELEASE}.${ARCH}"
 	if [ -d "${RELEASE}.${ARCH}" ]; then
 	    cp "${DOCLONE}.${ARCH}"/* "${RELEASE}.${ARCH}"
-	    gsed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: "${RELEASE}.${ARCH}/tribblix.ovl"
-	    gsed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.repo"
-	    gsed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: "${RELEASE}.${ARCH}/illumos.repo"
-	    gsed -i s:/release-${DOCLONE}:/release-${RELEASE}: "${RELEASE}.${ARCH}/release.repo"
+	    sed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: "${RELEASE}.${ARCH}/tribblix.ovl"
+	    sed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.repo"
+	    sed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: "${RELEASE}.${ARCH}/illumos.repo"
+	    sed -i s:/release-${DOCLONE}:/release-${RELEASE}: "${RELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
 	    echo "${RELTEXT}" > "${RELEASE}.${ARCH}/release.txt"
 	    # current version for upgrader
@@ -219,8 +219,8 @@ if [[ -n $URELEASE ]]; then
 	mkdir -p "${RELEASE}.${URELEASE}.${ARCH}"
 	if [ -d "${RELEASE}.${URELEASE}.${ARCH}" ]; then
 	    cp "${RELEASE}.${ARCH}"/* "${RELEASE}.${URELEASE}.${ARCH}"
-	    gsed -i s:/illumos-${RELEASE}:/illumos-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/illumos.repo"
-	    gsed -i s:/release-${RELEASE}:/release-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/release.repo"
+	    sed -i s:/illumos-${RELEASE}:/illumos-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/illumos.repo"
+	    sed -i s:/release-${RELEASE}:/release-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
 	    RELTEXT=$(cat "${RELEASE}.${ARCH}/release.txt")
 	    echo "${RELTEXT} update ${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/release.txt"
