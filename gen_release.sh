@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
+# Copyright 2025 Peter Tribble
+#
 # creates a release package
 #
 # extracts all the information out of the release string
@@ -125,7 +127,7 @@ echo "ID_LIKE=${OSID_LIKE}" >> "${BDIR}/etc/os-release"
 echo "HOME_URL=${OSHOME_URL}" >> "${BDIR}/etc/os-release"
 echo "VARIANT_ID=${OSVARIANT_ID}" >> "${BDIR}/etc/os-release"
 
-cd "$BDIR"
+cd "$BDIR" || exit 1
 #
 PKGNAME="TRIBrelease-name"
 #

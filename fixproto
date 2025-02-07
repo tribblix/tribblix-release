@@ -1,5 +1,9 @@
 #!/bin/sh
 #
+# SPDX-License-Identifier: CDDL-1.0
+#
+# Copyright 2025 Peter Tribble
+#
 # fixes up prototype files, by setting the correct permissions
 # for existing directories
 #

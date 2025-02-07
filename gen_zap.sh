@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
+# Copyright 2025 Peter Tribble
+#
 # creates a zap package
 #
 # extracts all the information out of the release string
@@ -43,7 +45,7 @@ shift $((OPTIND - 1))
 #
 # derived parameters
 #
-PKGVER=$(echo ${RELEASE}|sed s:m:0.:)
+PKGVER=${RELEASE/m/0.}
 if [[ -z $URELEASE ]]; then
     RELDIR="${RELEASE}.${ARCH}"
     PKGVER="${PKGVER}.0"

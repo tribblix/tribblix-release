@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
+# Copyright 2025 Peter Tribble
+#
 # creates a zap package
 #
 THOME=${THOME:-/packages/localsrc/Tribblix}

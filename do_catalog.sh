@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
+# Copyright 2025 Peter Tribble
+#
 # update a catalog and edit it
 #
 if [ ! -d "$1" ]; then

@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
+# Copyright 2025 Peter Tribble
+#
 # create the packages for a release
 #
 # there are 3 packages that define a release:
@@ -139,6 +141,7 @@ if [[ -n $DOCLONE ]]; then
 	    UGURL=$(grep '^URL=' "${RELEASE}.${ARCH}/release.repo" | sed s:URL=::)
 	    # milestone releases have different numbering
 	    NRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
+	    NRELEASE=${RELEASE/m/0.0.}
 	    echo "${RELEASE}|${UGURL}TRIBzap.${NRELEASE}.0.zap|${RELTEXT}" > "${RELEASE}.${ARCH}/version.list"
 	    exit 0
 	else
@@ -228,7 +231,7 @@ if [[ -n $URELEASE ]]; then
 	    echo "${RELEASE}.${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/version.current"
 	    UGURL=$(grep '^URL=' "${RELEASE}.${URELEASE}.${ARCH}/release.repo" | sed s:URL=::)
 	    # milestone releases have different numbering
-	    NRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
+	    NRELEASE=${RELEASE/m/0.0.}
 	    echo "${RELEASE}.${URELEASE}|${UGURL}TRIBzap.${NRELEASE}.${URELEASE}.zap|${RELTEXT} update ${URELEASE}" > "${RELEASE}.${URELEASE}.${ARCH}/version.list"
 	else
 	    usage "Cannot create ${RELEASE}.${URELEASE}.${ARCH}"
@@ -246,8 +249,8 @@ echo "URELEASE: $URELEASE"
 # construct package versions
 # milestone releases have different numbering
 #
-ZRELEASE=$(echo "${RELEASE}"|sed s:m:0.0.:)
-RRELEASE=$(echo "${RELEASE}"|sed s:m:0.:)
+ZRELEASE=${RELEASE/m/0.0.}
+RRELEASE=${RELEASE/m/0.}
 if [[ -n $URELEASE ]]; then
     THISREL=${RELEASE}.${URELEASE}
     ZPKGVER=${ZRELEASE}.${URELEASE}
@@ -291,7 +294,7 @@ cp /tmp/pct/TRIBrelease-name."${RPKGVER}".zap* "../${REPODIR}/${THISREL}.${ARCH}
 # the one from the target release, if it's not already there
 #
 
-NRELEASE=$(echo "${RELEASE}"|sed s:m:0.:)
+NRELEASE=${RELEASE/m/0.}
 if [[ -n $URELEASE ]]; then
     for ugr in "${RELEASE}".*."${ARCH}" "${RELEASE}.${ARCH}"
     do
@@ -303,7 +306,7 @@ if [[ -n $URELEASE ]]; then
 	    fi
 	    UVER=$(wc -l "${ugr}/version.list"|awk '{print $1}')
 	    UVER=$((UVER-1))
-	    NRELEASE=$(echo "${NVER}"|sed s:m:0.:)
+	    NRELEASE=${NVER/m/0.}
 	    PKGVER="${NRELEASE}.${UVER}"
 	    echo "Creating TRIBzap-upgrade package version ${PKGVER} for ${ugr}"
 	    mkdir -p "../${REPODIR}/${ugr}"
@@ -330,7 +333,7 @@ do
 	    fi
 	    UVER=$(wc -l "${ugr}/version.list"|awk '{print $1}')
 	    UVER=$((UVER-1))
-	    NRELEASE=$(echo "${NVER}"|sed s:m:0.:)
+	    NRELEASE=${NVER/m/0.}
 	    PKGVER="${NRELEASE}.${UVER}"
 	    echo "Creating TRIBzap-upgrade package version ${PKGVER} for ${ugr}"
 	    mkdir -p "../${REPODIR}/${ugr}"
