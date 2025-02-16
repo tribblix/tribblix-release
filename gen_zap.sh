@@ -71,6 +71,16 @@ fi
 if [ ! -d "${RELDIR}" ]; then
     usage "Cannot find release ${RELDIR}"
 fi
+#
+# check a driver map exists
+# this should have already been checked in mk_pkgs.sh
+#
+if [ ! -f "${RELDIR}/driver-map.txt" ]; then
+    echo "${RELDIR} needs a driver map"
+    echo "run the following command to create one"
+    echo "./mk-driver-map.sh -V ${RELEASE}"
+    exit 1
+fi
 
 #
 # define where we're going to create the package
@@ -179,6 +189,7 @@ cp "${RELDIR}"/overlays.list ${BDIR}/etc/zap
 cp "${RELDIR}"/repo.list ${BDIR}/etc/zap
 cp "${RELDIR}"/*.repo ${BDIR}/etc/zap/repositories
 cp "${RELDIR}"/*.ovl ${BDIR}/etc/zap/repositories
+cp "${RELDIR}"/driver-map.txt ${BDIR}/usr/share/zap/driver-map.txt
 
 cd $BDIR || exit 1
 #

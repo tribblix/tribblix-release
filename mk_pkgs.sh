@@ -130,6 +130,8 @@ if [[ -n $DOCLONE ]]; then
 	mkdir -p "${RELEASE}.${ARCH}"
 	if [ -d "${RELEASE}.${ARCH}" ]; then
 	    cp "${DOCLONE}.${ARCH}"/* "${RELEASE}.${ARCH}"
+	    # remove the driver map, we'll need a new one
+	    rm -f "${RELEASE}.${ARCH}"/driver-map.txt
 	    sed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: "${RELEASE}.${ARCH}/tribblix.ovl"
 	    sed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.repo"
 	    sed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: "${RELEASE}.${ARCH}/illumos.repo"
@@ -162,6 +164,16 @@ fi
 #
 if [ ! -d "${RELEASE}.${ARCH}" ]; then
     usage "Release directory ${RELEASE}.${ARCH} must exist"
+fi
+
+#
+# we must have a driver map file
+#
+if [ ! -f "${RELEASE}.${ARCH}/driver-map.txt" ]; then
+    echo "${RELEASE}.${ARCH} needs a driver map"
+    echo "run the following command to create one"
+    echo "./mk-driver-map.sh -V ${RELEASE}"
+    exit 1
 fi
 
 #
