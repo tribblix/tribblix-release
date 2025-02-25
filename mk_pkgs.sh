@@ -234,6 +234,8 @@ if [[ -n $URELEASE ]]; then
 	mkdir -p "${RELEASE}.${URELEASE}.${ARCH}"
 	if [ -d "${RELEASE}.${URELEASE}.${ARCH}" ]; then
 	    cp "${RELEASE}.${ARCH}"/* "${RELEASE}.${URELEASE}.${ARCH}"
+	    # remove the driver map, we'll need a new one
+	    rm -f "${RELEASE}.${URELEASE}.${ARCH}"/driver-map.txt
 	    sed -i s:/illumos-${RELEASE}:/illumos-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/illumos.repo"
 	    sed -i s:/release-${RELEASE}:/release-${RELEASE}.${URELEASE}: "${RELEASE}.${URELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
@@ -248,6 +250,15 @@ if [[ -n $URELEASE ]]; then
 	else
 	    usage "Cannot create ${RELEASE}.${URELEASE}.${ARCH}"
 	fi
+    fi
+    #
+    # we must have a driver map file
+    #
+    if [ ! -f "${RELEASE}.${URELEASE}.${ARCH}/driver-map.txt" ]; then
+	echo "${RELEASE}.${URELEASE}.${ARCH} needs a driver map"
+	echo "run the following command to create one"
+	echo "./mk-driver-map.sh -V ${RELEASE}.${URELEASE}"
+	exit 1
     fi
 fi
 
