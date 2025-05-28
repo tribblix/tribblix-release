@@ -121,9 +121,16 @@ rm -f ${BDIR}/usr/lib/zap/upgrade
 mkdir -p ${BDIR}/var/zap/cache
 mkdir -p ${BDIR}/var/zap/images
 mkdir -p ${BDIR}/var/zap/zones
+#
+# anything docker-related only exists in lx
+#
 case $RELEASE in
     *lx*)
 	mkdir -p ${BDIR}/var/zap/docker
+	;;
+    *)
+	rm -f ${BDIR}/usr/lib/zap/docker-pull
+	rm -f ${BDIR}/usr/lib/zap/docker-unpack
 	;;
 esac
 
