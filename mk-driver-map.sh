@@ -78,4 +78,3 @@ fi
 #
 ${MAPPER} -G "${TOPGATEDIR}/${VERSION}-gate" > "${VERSION}.${ARCH}"/driver-map.txt
 ${MAPPER} -G "${TOPGATEDIR}/gfx-drm" -R drm >> "${VERSION}.${ARCH}"/driver-map.txt
-
