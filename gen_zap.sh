@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CDDL-1.0
 #
-# Copyright 2025 Peter Tribble
+# Copyright 2026 Peter Tribble
 #
 # creates a zap package
 #
@@ -120,6 +120,7 @@ rm -f ${BDIR}/usr/lib/zap/upgrade
 #
 mkdir -p ${BDIR}/var/zap/cache
 mkdir -p ${BDIR}/var/zap/images
+mkdir -p ${BDIR}/var/zap/log
 mkdir -p ${BDIR}/var/zap/zones
 #
 # anything docker-related only exists in lx
