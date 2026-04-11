@@ -195,8 +195,10 @@ rm -fr ${BDIR}/etc/zap/repositories
 mkdir -p ${BDIR}/etc/zap/repositories
 cp "${RELDIR}"/overlays.list ${BDIR}/etc/zap
 cp "${RELDIR}"/repo.list ${BDIR}/etc/zap
+cp "${RELDIR}"/appstack.list ${BDIR}/etc/zap
 cp "${RELDIR}"/*.repo ${BDIR}/etc/zap/repositories
 cp "${RELDIR}"/*.ovl ${BDIR}/etc/zap/repositories
+cp "${RELDIR}"/*.app ${BDIR}/etc/zap/repositories
 cp "${RELDIR}"/driver-map.txt ${BDIR}/usr/share/zap/driver-map.txt
 
 cd $BDIR || exit 1
