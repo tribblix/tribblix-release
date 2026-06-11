@@ -134,7 +134,7 @@ if [[ -n $DOCLONE ]]; then
 	    rm -f "${RELEASE}.${ARCH}"/driver-map.txt
 	    sed -i s:/overlays-${DOCLONE}:/overlays-${RELEASE}: "${RELEASE}.${ARCH}/tribblix.ovl"
 	    sed -i s:/tribblix-${DOCLONE}:/tribblix-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.repo"
-	    sed -i s:/appstack-${DOCLONE}:/appstack-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.app"
+	    sed -i s:/appstacks-${DOCLONE}:/appstacks-${TRELEASE}: "${RELEASE}.${ARCH}/tribblix.app"
 	    sed -i s:/illumos-${DOCLONE}:/illumos-${RELEASE}: "${RELEASE}.${ARCH}/illumos.repo"
 	    sed -i s:/release-${DOCLONE}:/release-${RELEASE}: "${RELEASE}.${ARCH}/release.repo"
 	    # source for /etc/release
